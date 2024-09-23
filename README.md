@@ -400,6 +400,13 @@ To run tests (once implemented):
 poetry run pytest
 ```
 
+## API Docs
+
+```
+http://localhost:8000/docs
+```
+
+
 ## Contributing
 
 Please refer to the CONTRIBUTING.md file for guidelines on how to contribute to this project.
