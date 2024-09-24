@@ -4,7 +4,7 @@ This project provides a FastAPI wrapper for the trading_kit analysis functions.
 
 ## Setup
 
-1. Ensure you have Python 3.9+ and Poetry installed.
+1. Ensure you have Python 3.10 and Poetry installed.
 2. Clone this repository:
    ```
    git clone https://github.com/yourusername/trading_kit_fastapi.git
@@ -394,7 +394,7 @@ Response:
 
 ## Testing
 
-To run tests (once implemented):
+To run tests:
 
 ```
 poetry run pytest
