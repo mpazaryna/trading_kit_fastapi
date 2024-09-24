@@ -14,6 +14,7 @@ Routes:
 - POST /analyze_stock_trends: Analyzes stock trends based on provided stock data.
 """
 
+import logging
 from typing import Dict, List, Optional
 
 import numpy as np
@@ -21,24 +22,18 @@ import pandas as pd
 from fastapi import APIRouter, HTTPException
 from trading_kit.strategies.analyze_stock_trends import analyze_stock_trends as ast
 
-from trading_kit_fastapi.api.models import AnalysisResult, StockData  # Updated import
+from trading_kit_fastapi.api.models import AnalysisResult, StockData
+from trading_kit_fastapi.api.utils import (
+    nan_to_none,
+    to_dict_with_nan,
+    to_signal_dict_with_nan,
+)
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
-
-
-def nan_to_none(value: float) -> Optional[float]:
-    """
-    Converts NaN values to None.
-
-    Args:
-        value (float): The value to check for NaN.
-
-    Returns:
-        Optional[float]: None if the value is NaN, otherwise the original value.
-    """
-    if isinstance(value, float) and np.isnan(value):
-        return None
-    return value
 
 
 @router.post("/analyze_stock_trends", response_model=AnalysisResult)
@@ -82,20 +77,9 @@ async def analyze_stock_trends_endpoint(stock_data: StockData) -> AnalysisResult
         )
 
         # Convert results to dictionaries, handling NaN values
-        short_wma_dict = {
-            date.strftime("%Y-%m-%d"): nan_to_none(value)
-            for date, value in short_wma.items()
-        }
-        long_wma_dict = {
-            date.strftime("%Y-%m-%d"): nan_to_none(value)
-            for date, value in long_wma.items()
-        }
-        signals_dict = {
-            date.strftime("%Y-%m-%d"): nan_to_none(
-                int(value) if not np.isnan(value) else None
-            )
-            for date, value in signals.items()
-        }
+        short_wma_dict = to_dict_with_nan(short_wma)
+        long_wma_dict = to_dict_with_nan(long_wma)
+        signals_dict = to_signal_dict_with_nan(signals)
 
         # Calculate summary of non-NaN signals
         signal_summary = signals.dropna().astype(int).value_counts().to_dict()
@@ -110,4 +94,5 @@ async def analyze_stock_trends_endpoint(stock_data: StockData) -> AnalysisResult
             summary=signal_summary,
         )
     except Exception as e:
+        logger.error(f"Analysis failed: {str(e)}")
         raise HTTPException(status_code=400, detail=f"Analysis failed: {str(e)}")
