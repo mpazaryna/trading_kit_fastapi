@@ -35,4 +35,4 @@ async def test_analyze_stock_trends_invalid_data(invalid_stock_data: dict):
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post("/analyze_stock_trends", json=invalid_stock_data)
         assert response.status_code == 400
-        assert "Analysis failed" in response.json()["detail"]
+        assert "Prices and dates must not be empty." in response.json()["detail"]

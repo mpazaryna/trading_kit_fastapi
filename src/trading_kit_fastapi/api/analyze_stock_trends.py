@@ -62,6 +62,11 @@ async def analyze_stock_trends_endpoint(stock_data: StockData) -> AnalysisResult
         HTTPException: If the analysis fails, an HTTP 400 error is raised with a
                        descriptive error message.
     """
+    if not stock_data.prices or not stock_data.dates:
+        raise HTTPException(
+            status_code=400, detail="Prices and dates must not be empty."
+        )
+
     try:
         # Convert input data to pandas Series
         prices = pd.Series(
