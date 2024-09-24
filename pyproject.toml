@@ -15,6 +15,7 @@ pytest = "^8.3.3"
 pytest-asyncio = "^0.24.0"
 httpx = "^0.27.2"
 invoke = "^2.2.0"
+psutil = "^6.0.0"
 
 [tool.poetry.scripts]
 start = "sh -c 'PYTHONPATH=src uvicorn src.trading_kit_fastapi.main:app --reload'"

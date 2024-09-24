@@ -4,12 +4,14 @@ from trading_kit_fastapi.api.about import router as about_router
 from trading_kit_fastapi.api.analyze_stock_trends import (
     router as analyze_stock_trends_router,
 )
+from trading_kit_fastapi.core.health import router as health_router
 
 app = FastAPI()
 
 # Include the routers
 app.include_router(about_router)
 app.include_router(analyze_stock_trends_router)
+app.include_router(health_router)
 
 
 @app.get("/")
