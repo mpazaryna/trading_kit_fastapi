@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 
-from trading_kit_fastapi.api.about import router as about_router
 from trading_kit_fastapi.api.analyze_stock_trends import (
     router as analyze_stock_trends_router,
 )
+from trading_kit_fastapi.core.about import router as about_router
 from trading_kit_fastapi.core.health import router as health_router
 
 app = FastAPI()
