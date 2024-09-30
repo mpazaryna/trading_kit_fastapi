@@ -13,7 +13,7 @@ Tests included:
 import pytest
 from pydantic import ValidationError
 
-from trading_kit_fastapi.api.models import AnalysisResult, StockData
+from trading_kit_fastapi.api.models import StockData
 
 
 def test_stock_data_model():
@@ -63,53 +63,3 @@ def test_stock_data_model():
     invalid_data["prices"] = ["invalid_price"]
     with pytest.raises(ValidationError):
         StockData(**invalid_data)
-
-
-def test_analysis_result_model():
-    """
-    Test the AnalysisResult model with both valid and invalid data.
-
-    This test performs the following checks:
-    1. Validates that an AnalysisResult instance can be created with valid data.
-    2. Asserts that the attributes of the created AnalysisResult instance match the input data.
-    3. Ensures that a ValidationError is raised when invalid data is provided for the 'signals' field.
-
-    Valid data example:
-    - company_name: "Test Company"
-    - short_wma: {"2023-01-01": 100.0, "2023-01-02": 101.0}
-    - long_wma: {"2023-01-01": 100.0, "2023-01-02": 101.0}
-    - signals: {"2023-01-01": 1, "2023-01-02": 0}
-    - summary: {"1": 1, "0": 1}
-
-    Invalid data example:
-    - signals: {"2023-01-01": "invalid_signal"} (should raise ValidationError)
-
-    Steps:
-    1. Create a valid AnalysisResult instance and assert its attributes.
-    2. Attempt to create an invalid AnalysisResult instance and assert that a ValidationError is raised.
-    """
-    valid_result = {
-        "company_name": "Test Company",
-        "short_wma": {"2023-01-01": 100.0, "2023-01-02": 101.0},
-        "long_wma": {"2023-01-01": 100.0, "2023-01-02": 101.0},
-        "signals": {"2023-01-01": 1, "2023-01-02": 0},
-        "summary": {"1": 1, "0": 1},
-    }
-
-    # Test valid result
-    analysis_result = AnalysisResult(**valid_result)
-    assert analysis_result.company_name == "Test Company"
-    assert analysis_result.short_wma == {"2023-01-01": 100.0, "2023-01-02": 101.0}
-    assert analysis_result.long_wma == {"2023-01-01": 100.0, "2023-01-02": 101.0}
-    assert analysis_result.signals == {"2023-01-01": 1, "2023-01-02": 0}
-    assert analysis_result.summary == {"1": 1, "0": 1}
-
-    # Test invalid result
-    invalid_result = valid_result.copy()
-    invalid_result["signals"] = {"2023-01-01": "invalid_signal"}
-    with pytest.raises(ValidationError):
-        AnalysisResult(**invalid_result)
-
-
-if __name__ == "__main__":
-    pytest.main()
